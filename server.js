@@ -1,32 +1,34 @@
-import express from 'express';
-import { adminRouter, authRouter, cartRouter, orderRouter, productRouter, userRouter} from './Routers/barrel.js';
-import { connectDB } from './mongodb/mongodb.js';
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
+import { adminRouter, authRouter, cartRouter, categoryRouter, orderRouter, paymentRouter, productRouter, userRouter } from "./Routers/barrel.js";
+import { connectDB } from "./lib/mongodb.js";
+import { connectRedis } from "./lib/redis.js";
+import cookieParser from "cookie-parser";
 
 
-
-dotenv.config(); 
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000
 
-connectDB();
+// Connect database
+connectDB();      
+connectRedis();   
 
-// Middleware to parse JSON body and urlencoded form data
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); 
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-
-// Routes
+// API routes
 app.use('/api/admin', adminRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/categories', categoryRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/payments', paymentRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 
-
-const PORT = process.env.PORT || 3000
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Start server
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

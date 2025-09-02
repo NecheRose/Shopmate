@@ -1,20 +1,35 @@
+import Product from "../../models/productSchema.js";
 
 
 
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate("category", "name") 
+      .sort({ createdAt: -1 }); // newest first
 
-
-
-export const getProducts = async(req, res) => {
-/* GET /products → all products, GET /products?search=phone → search by keyword, GET /products?category=64fe2f2a2f4b2c1234 → filter by category ID, GET /products?category=64fe2f2a2f4b2c1234&sort=price_desc → category + sort */ 
+    return res.status(200).json({ products });
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    res.status(500).json({ message: "Error fetching products", err: err.message });
+  }
 };
 
-// returns all categories and a single category by id(const {id} = req.query)
-export const getCategories = async(req, res) => {
+export const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const product = await Product.findById(id).populate("category", "name description"); 
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({ product });
+  } catch (err) {
+    console.error('Error fetching product:', err);
+    res.status(500).json({ message: 'Error fetching product', err: err.message });
+  }
 };
 
-
-export const getProductById = async(req, res) => {
-
-};
 

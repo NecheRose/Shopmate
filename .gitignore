@@ -1,16 +1,5 @@
 .env
 node_modules
-README.md
 
 
-git commit -m "chore: initial setup with structure, API routes, schemas, controllers, middlewares, and configs"
-git remote add origin https://github.com/NecheRose/Shopmate.git
-git branch -M main
-git push -u origin main
-
-git remote set-url origin https://github.com/NecheRose/Shopmate.git
-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
-
-git pull origin main --rebase
-git push -u origin main
 

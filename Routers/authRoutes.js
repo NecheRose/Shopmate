@@ -1,5 +1,6 @@
-import { Router } from 'express';
-import { registerUser, loginUser, logoutUser, verifyEmail, resendVerification, requestPasswordReset, resetPassword, refreshAccessToken} from '../controllers/users/barrel.js';
+import { Router } from "express";
+import { registerUser, verifyEmail, resendVerificationLink, loginUser, logoutUser, passwordResetRequest, passwordReset, refreshAccessToken} from "../controllers/users/barrel.js";
+import { loginLimiter } from "../middlewares/authMiddleware.js";
 
 const authRouter = Router();
 
@@ -7,17 +8,17 @@ const authRouter = Router();
 authRouter
       // Authentication
       .post('/register', registerUser)
-      .post('/login', loginUser)
+      .post('/login', loginLimiter, loginUser)
       .post('/logout', logoutUser)
-      .post('/auth/refresh-token', refreshAccessToken) 
+      .post('/refresh-token', refreshAccessToken) 
 
       // Email Verification
-      .get('/email/verify', verifyEmail) 
-      .post('/email/resend-verification', resendVerification)
+      .get('/verify-email', verifyEmail) 
+      .post('/resend-verification', resendVerificationLink)
 
       // Password Reset 
-      .post('/forgot-password', requestPasswordReset)
-      .post('/auth/reset-password', resetPassword)
+      .post('/forgot-password', passwordResetRequest)
+      .post('/reset-password', passwordReset)
       
 
 

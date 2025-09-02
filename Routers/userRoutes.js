@@ -1,19 +1,22 @@
-import { Router } from 'express';
-import { getAllCategories, getCategoryById, getUserProfile, updateUserProfile, changePassword, deleteUserAccount } from '../controllers/users/barrel.js';
-import authMiddleware from '../middlewares/authMiddleware.js';
+import { Router } from "express";
+import { getUserProfile, updateUserProfile, changePassword, deleteUserAccount } from "../controllers/users/barrel.js";
+import { getAllUsers, getUserById } from "../controllers/admin/barrel.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { adminOrSuperadminOnly } from "../middlewares/adminMiddleware.js";
 
 const userRouter = Router();
 
 userRouter
-      // Routes for only authenticated users
       .get('/me', authMiddleware, getUserProfile)
-      .put('/me/update-profile', authMiddleware, updateUserProfile)
-      .put('/me/change-password', authMiddleware, changePassword)
+      .patch('/me/update-profile', authMiddleware, updateUserProfile)
+      .post('/me/change-password', authMiddleware, changePassword)
       .delete('/me', authMiddleware, deleteUserAccount) 
+      // Admin only
+      .get('/', authMiddleware, adminOrSuperadminOnly, getAllUsers)
+      .get('/:id', authMiddleware, adminOrSuperadminOnly, getUserById) 
+
 
       
-      
-
 
 export default userRouter;
       
